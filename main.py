@@ -20,10 +20,19 @@ curb = Spell("Curb", 20, 240, "Light")
 #Create Items
 potion = Item("Potion", "potion", "Heals 50 HP", 50)
 hipotion = Item("Hi-Potion", "potion", "Heals 100 HP", 100)
+superpotion = Item("Super-Potion", "potion", "Heals 500", 500)
+elixer = Item("Elixer", "elixer", "Fully restores HP/MP of one party member", 99999999)
+hielixir = Item("Hi-Elixir", "elixer", "Fully restores party's HP/MP", 99999999)
 
-# Instantiate People    
-player = person(480, 60, 90, 100, [Fire, Thunder, Dark_wind, Sasuke, Dragon, Naruto, Quake, cure, cura, curb])
-enemy = person(1200, 65, 45, 80, [])
+grenade = Item("Grenade", "attack", "Deals 500 Damage", 500)
+
+player_spell = [Fire, Thunder, Dark_wind, Sasuke, Dragon, Naruto, Quake, cure, cura, curb]
+player_item = [potion,hipotion,superpotion,elixer,hielixir,grenade]
+
+
+# Instantiate characters    
+player = person(480, 60, 90, 100, player_spell, player_item)
+enemy = person(1200, 65, 45, 80, [],[])
 
 
 running = True
@@ -55,13 +64,16 @@ while running:
 		print("You attacked for", dmg, "damage!", "Enemy HP", enemy.get_hp())
 
 	
-	elif index == 1:
+	if index == 1:
 		 # Display magic attack options
 		player.choose_magic()
 
 		 # Player chooses magic attack
 		magic_choice = input("Choose Magic: ")
 		index = int(magic_choice) - 1
+
+		if magic_choice == 0:
+			continue
 
 		current_mp = player.get_mp()
 		spell = player.magic[index]
@@ -88,6 +100,25 @@ while running:
 			enemy.take_damage(mdmg)
 			print("You attacked", spell.name, "for", mdmg, "spell damage!", "Enemy HP", enemy.get_hp())
 
+	elif index == 2:
+		player.choose_items()
+		
+		item_choice = input("Choose Item: ")
+		index = int(item_choice) - 1
+		item = player.items[index]
+
+		if item_choice == 0:
+			continue
+			
+
+		if item.type == "potion":
+			player.heal(item.prop)
+			print(bcolors.OKBLUE + bcolors.BOLD + "\nYou healed for", item.prop, "HP!\n" + bcolors.ENDC)
+		
+		elif item.type == "attack":
+			enemy.take_damage(item.prop)
+			print(bcolors.OKBLUE + bcolors.BOLD + "\nYou attacked for", item.prop, "damage!\n" + bcolors.ENDC)
+			
 	
 	print("\n===============================")
 	
